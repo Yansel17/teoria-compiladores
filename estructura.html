@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estructura de un compilador · Teoría de Compiladores</title>
+<meta name="description" content="El modelo análisis–síntesis, el front-end y el back-end, la tabla de símbolos, el manejador de errores y la cadena de herramientas que rodea al compilador.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a3ca8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7h6l2 3-2 3H3z'/%3E%3Cpath d='M13 10h4'/%3E%3Cpath d='M15 7l3 3-3 3'/%3E%3Cpath d='M4 17h16'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 3-2 3H3z"/><path d="M13 10h4"/><path d="M15 7l3 3-3 3"/><path d="M4 17h16"/></svg> Teoría de Compiladores</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-principal">Menú</button>
+    <nav aria-label="Secciones del portal">
+      <ul class="nav" id="nav-principal">
+        <li><a href="index.html">Portada</a></li>
+        <li><a href="compiladores.html">Compiladores y autómatas</a></li>
+        <li><a href="estructura.html">Estructura</a></li>
+        <li><a href="fases.html">Fases</a></li>
+        <li><a href="codigo.html">Código intermedio y final</a></li>
+        <li><a href="actuales.html">Compiladores actuales</a></li>
+        <li><a href="laboratorio.html">Laboratorio</a></li>
+        <li><a href="glosario.html">Glosario</a></li>
+        <li><a href="referencias.html">Referencias</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <p class="kicker">Sección 2</p>
+    <h1>Estructura de un compilador</h1>
+    <p class="lead">Por dentro, un compilador no es una sola pieza sino una cadena de módulos. Cada uno recibe el programa en una representación, lo transforma y lo pasa al siguiente. Dos componentes de apoyo acompañan a todos: la tabla de símbolos y el manejador de errores.</p>
+  </div>
+
+  <h2 class="mt-0">El modelo análisis–síntesis</h2>
+  <p>La forma clásica de describir un compilador divide su trabajo en dos grandes partes:</p>
+  <ul>
+    <li><span class="fase-tag analisis">Análisis</span> (el <em>front-end</em>): lee el programa fuente, lo descompone en partes, verifica que esté bien formado y construye una representación intermedia con toda la información necesaria. Depende del <strong>lenguaje fuente</strong>.</li>
+    <li><span class="fase-tag sintesis">Síntesis</span> (el <em>back-end</em>): toma esa representación intermedia y construye el programa objeto, mejorándolo por el camino. Depende de la <strong>máquina destino</strong>.</li>
+  </ul>
+
+  <figure>
+    <svg viewBox="0 0 760 420" role="img" aria-labelledby="fig4t">
+      <title id="fig4t">Diagrama de bloques de un compilador: seis fases en columna, de analizador léxico a generador de código, agrupadas en análisis y síntesis; a un lado, la tabla de símbolos y el manejador de errores conectados con todas las fases.</title>
+      <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2b3449"/></marker></defs>
+      <!-- agrupaciones -->
+      <rect x="20" y="40" width="420" height="170" rx="8" fill="#ebe5f8" stroke="#5a3ca8" stroke-dasharray="5 4"/>
+      <text x="428" y="60" text-anchor="end" font-family="Literata, serif" font-size="11" font-style="italic" fill="#5a3ca8">depende del lenguaje fuente</text>
+      <text x="178" y="60" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#5a3ca8">ANÁLISIS · front-end</text>
+      <rect x="20" y="228" width="420" height="120" rx="8" fill="#dff1ee" stroke="#167c73" stroke-dasharray="5 4"/>
+      <text x="428" y="248" text-anchor="end" font-family="Literata, serif" font-size="11" font-style="italic" fill="#167c73">depende de la máquina destino</text>
+      <text x="178" y="250" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#167c73">SÍNTESIS · back-end</text>
+      <!-- fases -->
+      <g font-family="IBM Plex Mono, monospace" font-size="13" fill="#141c2e">
+        <rect x="60" y="70" width="190" height="30" rx="4" fill="#fff" stroke="#5a3ca8"/><text x="155" y="90" text-anchor="middle">analizador léxico</text>
+        <rect x="60" y="108" width="190" height="30" rx="4" fill="#fff" stroke="#5a3ca8"/><text x="155" y="128" text-anchor="middle">analizador sintáctico</text>
+        <rect x="60" y="146" width="190" height="30" rx="4" fill="#fff" stroke="#5a3ca8"/><text x="155" y="166" text-anchor="middle">analizador semántico</text>
+        <rect x="60" y="184" width="190" height="30" rx="4" fill="#fff" stroke="#5a3ca8"/><text x="155" y="204" text-anchor="middle">gen. código intermedio</text>
+        <rect x="60" y="260" width="190" height="30" rx="4" fill="#fff" stroke="#167c73"/><text x="155" y="280" text-anchor="middle">optimizador de código</text>
+        <rect x="60" y="298" width="190" height="30" rx="4" fill="#fff" stroke="#167c73"/><text x="155" y="318" text-anchor="middle">generador de código</text>
+      </g>
+      <!-- flujo -->
+      <g stroke="#2b3449" stroke-width="1.6" marker-end="url(#ar3)">
+        <line x1="155" y1="20" x2="155" y2="68"/>
+        <line x1="155" y1="100" x2="155" y2="106"/>
+        <line x1="155" y1="138" x2="155" y2="144"/>
+        <line x1="155" y1="176" x2="155" y2="182"/>
+        <line x1="155" y1="214" x2="155" y2="258"/>
+        <line x1="155" y1="290" x2="155" y2="296"/>
+        <line x1="155" y1="328" x2="155" y2="380"/>
+      </g>
+      <text x="165" y="30" font-family="Literata, serif" font-size="12" fill="#5b6478" font-style="italic">programa fuente</text>
+      <text x="165" y="398" font-family="Literata, serif" font-size="12" fill="#5b6478" font-style="italic">programa objeto</text>
+      <!-- representaciones intermedias (derecha de las flechas) -->
+      <g font-family="Literata, serif" font-size="11" fill="#5b6478" font-style="italic">
+        <text x="262" y="107">tokens</text>
+        <text x="262" y="145">árbol sintáctico</text>
+        <text x="262" y="183">árbol anotado</text>
+        <text x="262" y="226">código intermedio</text>
+        <text x="262" y="297">código intermedio optimizado</text>
+      </g>
+      <!-- apoyo -->
+      <rect x="500" y="100" width="230" height="70" rx="6" fill="#f9ecd8" stroke="#b9741a"/>
+      <text x="615" y="130" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#141c2e">tabla de símbolos</text>
+      <text x="615" y="150" text-anchor="middle" font-family="Literata, serif" font-size="11" fill="#5b6478" font-style="italic">nombres, tipos, ámbitos, direcciones</text>
+      <rect x="500" y="230" width="230" height="70" rx="6" fill="#f9ecd8" stroke="#b9741a"/>
+      <text x="615" y="260" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#141c2e">manejador de errores</text>
+      <text x="615" y="280" text-anchor="middle" font-family="Literata, serif" font-size="11" fill="#5b6478" font-style="italic">detecta, reporta e intenta recuperarse</text>
+      <g stroke="#b9741a" stroke-width="1.4" stroke-dasharray="4 3" fill="none">
+        <path d="M440 135 L500 135"/>
+        <path d="M440 265 L500 265"/>
+        <path d="M470 135 L470 265"/>
+      </g>
+      <text x="470" y="205" text-anchor="middle" font-family="Literata, serif" font-size="11" fill="#b9741a" font-style="italic" transform="rotate(-90 470 205)">todas las fases</text>
+    </svg>
+    <figcaption><b>Figura 4.</b> Estructura de un compilador según el modelo análisis–síntesis. Las flechas verticales muestran cómo cambia la representación del programa; las líneas punteadas, que la tabla de símbolos y el manejador de errores dan servicio a todas las fases.</figcaption>
+  </figure>
+
+  <h2>Las fases, en una frase cada una</h2>
+  <p>Cada fase se desarrolla con detalle en la sección <a href="fases.html">Fases de la compilación</a>. Aquí interesa su papel dentro de la estructura:</p>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Fase</th><th>Recibe</th><th>Entrega</th><th>Pregunta que responde</th></tr></thead>
+    <tbody>
+      <tr><td><span class="fase-tag analisis">1</span> Analizador léxico</td><td>Caracteres</td><td>Tokens</td><td>¿Qué "palabras" hay en el texto?</td></tr>
+      <tr><td><span class="fase-tag analisis">2</span> Analizador sintáctico</td><td>Tokens</td><td>Árbol sintáctico</td><td>¿Están en un orden que la gramática permite?</td></tr>
+      <tr><td><span class="fase-tag analisis">3</span> Analizador semántico</td><td>Árbol sintáctico</td><td>Árbol anotado con tipos</td><td>¿Tiene sentido lo que dice?</td></tr>
+      <tr><td><span class="fase-tag analisis">4</span> Generador de código intermedio</td><td>Árbol anotado</td><td>Código intermedio</td><td>¿Cómo se expresa en instrucciones simples e independientes de la máquina?</td></tr>
+      <tr><td><span class="fase-tag sintesis">5</span> Optimizador</td><td>Código intermedio</td><td>Código intermedio mejorado</td><td>¿Se puede hacer más rápido o más pequeño sin cambiar el resultado?</td></tr>
+      <tr><td><span class="fase-tag sintesis">6</span> Generador de código</td><td>Código intermedio</td><td>Código objeto / ensamblador</td><td>¿Qué instrucciones concretas ejecuta este procesador?</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>Los dos componentes de apoyo</h2>
+  <div class="grid-2">
+    <div class="panel">
+      <h3><span class="fase-tag apoyo">apoyo</span> Tabla de símbolos</h3>
+      <p>Es la estructura de datos donde el compilador <strong>registra cada identificador</strong> que encuentra (variables, constantes, funciones, clases, parámetros) junto con sus atributos: tipo, ámbito en que es visible, tamaño, posición en memoria, si es constante, número y tipo de parámetros en el caso de funciones.</p>
+      <p>La crea el analizador léxico al ver un nombre por primera vez, la completa el analizador semántico con el tipo y la consultan todas las fases siguientes. Suele implementarse con tablas hash y una pila de tablas para manejar los ámbitos anidados.</p>
+    </div>
+    <div class="panel">
+      <h3><span class="fase-tag apoyo">apoyo</span> Manejador de errores</h3>
+      <p>Cada fase puede detectar errores distintos: un carácter que no pertenece al lenguaje (léxico), un paréntesis sin cerrar (sintáctico), una variable sin declarar o una suma entre un número y un texto (semántico).</p>
+      <p>Un buen manejador no se detiene en el primer error: <strong>reporta la posición y la causa</strong>, intenta recuperarse (por ejemplo, saltando hasta el próximo <code>;</code>) y continúa para encontrar más errores en la misma compilación.</p>
+    </div>
+  </div>
+
+  <h2>Por qué separar front-end y back-end</h2>
+  <p>La separación en dos mitades que se comunican por una representación intermedia tiene una consecuencia práctica enorme. Si se quieren soportar <em>N</em> lenguajes en <em>M</em> máquinas, sin representación intermedia harían falta <em>N × M</em> compiladores; con ella bastan <em>N</em> front-ends y <em>M</em> back-ends, es decir, <em>N + M</em> piezas.</p>
+  <figure>
+    <svg viewBox="0 0 760 230" role="img" aria-labelledby="fig5t">
+      <title id="fig5t">Tres front-ends (C, Rust, Swift) producen una misma representación intermedia, de la que tres back-ends generan código para x86-64, ARM y RISC-V.</title>
+      <defs><marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2b3449"/></marker></defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="13" fill="#141c2e">
+        <rect x="30" y="30" width="170" height="36" rx="4" fill="#ebe5f8" stroke="#5a3ca8"/><text x="115" y="53" text-anchor="middle">front-end C</text>
+        <rect x="30" y="96" width="170" height="36" rx="4" fill="#ebe5f8" stroke="#5a3ca8"/><text x="115" y="119" text-anchor="middle">front-end Rust</text>
+        <rect x="30" y="162" width="170" height="36" rx="4" fill="#ebe5f8" stroke="#5a3ca8"/><text x="115" y="185" text-anchor="middle">front-end Swift</text>
+        <rect x="300" y="78" width="160" height="72" rx="6" fill="#141c2e"/><text x="380" y="110" text-anchor="middle" fill="#fff" font-weight="600">representación</text><text x="380" y="130" text-anchor="middle" fill="#fff" font-weight="600">intermedia</text>
+        <rect x="560" y="30" width="170" height="36" rx="4" fill="#dff1ee" stroke="#167c73"/><text x="645" y="53" text-anchor="middle">back-end x86-64</text>
+        <rect x="560" y="96" width="170" height="36" rx="4" fill="#dff1ee" stroke="#167c73"/><text x="645" y="119" text-anchor="middle">back-end ARM</text>
+        <rect x="560" y="162" width="170" height="36" rx="4" fill="#dff1ee" stroke="#167c73"/><text x="645" y="185" text-anchor="middle">back-end RISC-V</text>
+      </g>
+      <g stroke="#2b3449" stroke-width="1.6" fill="none" marker-end="url(#ar4)">
+        <path d="M200 48 C 250 48, 250 114, 298 114"/>
+        <path d="M200 114 L 298 114"/>
+        <path d="M200 180 C 250 180, 250 114, 298 114"/>
+        <path d="M460 114 C 510 114, 510 48, 558 48"/>
+        <path d="M460 114 L 558 114"/>
+        <path d="M460 114 C 510 114, 510 180, 558 180"/>
+      </g>
+      <text x="380" y="218" text-anchor="middle" font-family="Literata, serif" font-size="12" fill="#5b6478" font-style="italic">3 + 3 = 6 piezas, en lugar de 3 × 3 = 9 compiladores completos</text>
+    </svg>
+    <figcaption><b>Figura 5.</b> Es exactamente el diseño de LLVM: Clang (C/C++), rustc (Rust) y swiftc (Swift) son front-ends distintos que producen LLVM IR y comparten los mismos optimizadores y back-ends. GCC hace lo mismo con sus representaciones GENERIC, GIMPLE y RTL.</figcaption>
+  </figure>
+
+  <h2>Fases y pasadas</h2>
+  <p>Las <strong>fases</strong> son una división lógica del trabajo; las <strong>pasadas</strong> son cuántas veces el compilador recorre el programa completo. Varias fases suelen agruparse en una sola pasada: por ejemplo, el analizador sintáctico pide tokens al léxico uno a uno y va construyendo el árbol mientras avanza, de modo que las fases 1 a 4 forman con frecuencia una única pasada del front-end. Las optimizaciones, en cambio, suelen requerir varias pasadas sobre el código intermedio.</p>
+
+  <h2>El compilador no trabaja solo</h2>
+  <p>Al compilar un programa en C con <code>gcc hola.c -o hola</code> intervienen más programas que el compilador propiamente dicho:</p>
+  <ol>
+    <li><strong>Preprocesador</strong>: expande <code>#include</code> y macros, y elimina comentarios, antes del análisis léxico.</li>
+    <li><strong>Compilador</strong>: traduce el fuente preprocesado a lenguaje ensamblador.</li>
+    <li><strong>Ensamblador</strong>: convierte el ensamblador en código objeto binario (<code>.o</code> / <code>.obj</code>).</li>
+    <li><strong>Enlazador</strong> (<em>linker</em>): une varios archivos objeto y bibliotecas en un único ejecutable, resolviendo las referencias entre ellos.</li>
+    <li><strong>Cargador</strong> (<em>loader</em>): parte del sistema operativo que coloca el ejecutable en memoria y lo pone en marcha.</li>
+  </ol>
+  <div class="nota sintesis">
+    <p>En .NET la cadena es diferente pero la idea se mantiene: el compilador de C# (Roslyn) produce CIL dentro de un ensamblado <code>.dll</code>, y el compilador JIT del CLR hace la última traducción a código nativo en el momento de ejecutar cada método. Se describe en <a href="codigo.html">Código intermedio y final</a>.</p>
+  </div>
+
+  <nav class="pager" aria-label="Navegación entre secciones">
+<a href="compiladores.html"><span>Anterior</span>← Compiladores y autómatas</a>
+<a href="fases.html"><span>Siguiente</span>Fases →</a>
+</nav>
+</main>
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>Portal académico · Teoría de Compiladores · <span data-anio></span></div>
+    <div><a href="referencias.html">Referencias consultadas</a> · <a href="https://github.com/Yansel17/teoria-compiladores">Código fuente del portal</a></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+
+</body>
+</html>

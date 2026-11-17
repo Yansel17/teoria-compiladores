@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glosario · Teoría de Compiladores</title>
+<meta name="description" content="Términos clave de la Teoría de Compiladores explicados en pocas líneas: token, gramática, autómata, AST, tabla de símbolos, código de tres direcciones, SSA, JIT y más.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a3ca8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7h6l2 3-2 3H3z'/%3E%3Cpath d='M13 10h4'/%3E%3Cpath d='M15 7l3 3-3 3'/%3E%3Cpath d='M4 17h16'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 3-2 3H3z"/><path d="M13 10h4"/><path d="M15 7l3 3-3 3"/><path d="M4 17h16"/></svg> Teoría de Compiladores</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-principal">Menú</button>
+    <nav aria-label="Secciones del portal">
+      <ul class="nav" id="nav-principal">
+        <li><a href="index.html">Portada</a></li>
+        <li><a href="compiladores.html">Compiladores y autómatas</a></li>
+        <li><a href="estructura.html">Estructura</a></li>
+        <li><a href="fases.html">Fases</a></li>
+        <li><a href="codigo.html">Código intermedio y final</a></li>
+        <li><a href="actuales.html">Compiladores actuales</a></li>
+        <li><a href="laboratorio.html">Laboratorio</a></li>
+        <li><a href="glosario.html">Glosario</a></li>
+        <li><a href="referencias.html">Referencias</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <p class="kicker">Sección 7 · elemento de interés</p>
+    <h1>Glosario</h1>
+    <p class="lead">Los términos que aparecen a lo largo del portal, en orden alfabético y explicados en una o dos líneas. Cada entrada remite a la sección donde se desarrolla.</p>
+  </div>
+
+  <dl class="glosario">
+    <dt>AOT (ahead-of-time)</dt>
+    <dd>Compilación a código nativo antes de ejecutar el programa, como hacen C, C++, Rust y Go, o .NET con Native AOT. Contrasta con JIT. → <a href="codigo.html">Código intermedio y final</a></dd>
+
+    <dt>Árbol sintáctico (AST)</dt>
+    <dd>Estructura jerárquica que produce el analizador sintáctico: los nodos internos son operadores o construcciones del lenguaje y las hojas, identificadores y constantes. "Abstracto" porque omite detalles como paréntesis o puntos y coma. → <a href="fases.html">Fases</a></dd>
+
+    <dt>Asignación de registros</dt>
+    <dd>Decisión, en la generación de código, de qué valores se guardan en los registros del procesador y cuáles en memoria. Se modela como un problema de coloreo de grafos. → <a href="codigo.html">Código intermedio y final</a></dd>
+
+    <dt>Autómata finito</dt>
+    <dd>Máquina abstracta con un número finito de estados que lee la entrada símbolo a símbolo. Reconoce exactamente los lenguajes regulares; es la base del análisis léxico. → <a href="compiladores.html">Compiladores y autómatas</a></dd>
+
+    <dt>Autómata con pila</dt>
+    <dd>Autómata finito con una pila como memoria. Reconoce los lenguajes libres de contexto, por lo que puede manejar estructuras anidadas como paréntesis balanceados; es la base del análisis sintáctico. → <a href="compiladores.html">Compiladores y autómatas</a></dd>
+
+    <dt>Back-end</dt>
+    <dd>Mitad del compilador que depende de la máquina destino: optimización y generación de código. → <a href="estructura.html">Estructura</a></dd>
+
+    <dt>Bytecode</dt>
+    <dd>Código intermedio compacto pensado para ser ejecutado por una máquina virtual (JVM, CLR). → <a href="codigo.html">Código intermedio y final</a></dd>
+
+    <dt>CIL (Common Intermediate Language)</dt>
+    <dd>Bytecode de pila de .NET al que compilan C#, F# y Visual Basic. El CLR lo convierte a código nativo con su compilador JIT. → <a href="codigo.html">Código intermedio y final</a></dd>
+
+    <dt>Código de tres direcciones</dt>
+    <dd>Forma de código intermedio en la que cada instrucción tiene a lo sumo un operador y tres operandos (dos fuentes y un destino), con variables temporales para los resultados parciales. → <a href="codigo.html">Código intermedio y final</a></dd>
+
+    <dt>Código objeto</dt>
+    <dd>Salida del compilador y el ensamblador: instrucciones de máquina en binario, aún sin enlazar con las bibliotecas. → <a href="estructura.html">Estructura</a></dd>
+
+    <dt>Compilador</dt>
+    <dd>Programa que traduce un programa escrito en un lenguaje fuente a un programa equivalente en un lenguaje objeto, reportando los errores que encuentra. → <a href="compiladores.html">Compiladores y autómatas</a></dd>
+
+    <dt>Enlazador (linker)</dt>
+    <dd>Herramienta que combina varios archivos objeto y bibliotecas en un ejecutable, resolviendo las referencias a funciones y variables definidas en otros archivos. → <a href="estructura.html">Estructura</a></dd>
+
+    <dt>Expresión regular</dt>
+    <dd>Notación para describir lenguajes regulares (por ejemplo <code>[a-z][a-z0-9]*</code>). Toda expresión regular se puede convertir en un autómata finito equivalente. → <a href="compiladores.html">Compiladores y autómatas</a></dd>
+
+    <dt>Front-end</dt>
+    <dd>Mitad del compilador que depende del lenguaje fuente: análisis léxico, sintáctico y semántico, y generación de código intermedio. → <a href="estructura.html">Estructura</a></dd>
+
+    <dt>Gramática libre de contexto</dt>
+    <dd>Conjunto de reglas de producción (normalmente escritas en BNF) en las que un símbolo no terminal se reemplaza por una secuencia de símbolos sin importar su contexto. Describe la sintaxis de los lenguajes de programación. → <a href="compiladores.html">Compiladores y autómatas</a></dd>
+
+    <dt>Intérprete</dt>
+    <dd>Programa que ejecuta directamente el código fuente, sentencia a sentencia, sin producir un programa objeto. → <a href="compiladores.html">Compiladores y autómatas</a></dd>
+
+    <dt>Jerarquía de Chomsky</dt>
+    <dd>Clasificación de los lenguajes formales en cuatro tipos (regulares, libres de contexto, sensibles al contexto y recursivamente enumerables), cada uno con su gramática y su reconocedor. → <a href="compiladores.html">Compiladores y autómatas</a></dd>
+
+    <dt>JIT (just-in-time)</dt>
+    <dd>Compilación de código intermedio a código nativo durante la ejecución del programa, normalmente método a método la primera vez que se usan. Lo hacen la JVM y el CLR. → <a href="codigo.html">Código intermedio y final</a></dd>
+
+    <dt>Lenguaje formal</dt>
+    <dd>Conjunto de cadenas formadas con símbolos de un alfabeto según reglas precisas. Un lenguaje de programación es un lenguaje formal. → <a href="compiladores.html">Compiladores y autómatas</a></dd>
+
+    <dt>Lexema</dt>
+    <dd>Secuencia concreta de caracteres del programa fuente que coincide con el patrón de un token: <code>total</code> es un lexema del token "identificador". → <a href="fases.html">Fases</a></dd>
+
+    <dt>LLVM IR</dt>
+    <dd>Representación intermedia del proyecto LLVM: tipada, en forma SSA y compartida por Clang, rustc, swiftc y otros front-ends. → <a href="actuales.html">Compiladores actuales</a></dd>
+
+    <dt>Optimización</dt>
+    <dd>Transformaciones del código intermedio que mantienen el resultado del programa pero lo hacen más rápido o más pequeño: plegado de constantes, eliminación de código muerto, eliminación de subexpresiones comunes, etc. → <a href="fases.html">Fases</a></dd>
+
+    <dt>Pasada</dt>
+    <dd>Cada recorrido completo del programa (o de su representación) que hace el compilador. Varias fases pueden ejecutarse en una sola pasada. → <a href="estructura.html">Estructura</a></dd>
+
+    <dt>Representación intermedia (IR)</dt>
+    <dd>Forma del programa, independiente de la máquina, que une el front-end con el back-end. → <a href="codigo.html">Código intermedio y final</a></dd>
+
+    <dt>SSA (Static Single Assignment)</dt>
+    <dd>Forma de representación intermedia en la que cada variable recibe un valor exactamente una vez. Simplifica muchos análisis y optimizaciones; la usan LLVM IR y GIMPLE. → <a href="codigo.html">Código intermedio y final</a></dd>
+
+    <dt>Tabla de símbolos</dt>
+    <dd>Estructura de datos donde el compilador guarda los identificadores del programa con sus atributos (tipo, ámbito, dirección). La consultan y actualizan todas las fases. → <a href="estructura.html">Estructura</a></dd>
+
+    <dt>Token</dt>
+    <dd>Unidad léxica con significado propio que produce el analizador léxico: palabra clave, identificador, número, operador o signo de puntuación. → <a href="fases.html">Fases</a></dd>
+
+    <dt>Transpilador</dt>
+    <dd>Compilador cuyo lenguaje objeto es otro lenguaje de alto nivel, como TypeScript → JavaScript. → <a href="actuales.html">Compiladores actuales</a></dd>
+
+    <dt>Verificación de tipos</dt>
+    <dd>Tarea principal del análisis semántico: comprobar que cada operación se aplica a operandos de tipos compatibles e insertar las conversiones permitidas. → <a href="fases.html">Fases</a></dd>
+  </dl>
+
+  <nav class="pager" aria-label="Navegación entre secciones">
+<a href="laboratorio.html"><span>Anterior</span>← Laboratorio</a>
+<a href="referencias.html"><span>Siguiente</span>Referencias →</a>
+</nav>
+</main>
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>Portal académico · Teoría de Compiladores · <span data-anio></span></div>
+    <div><a href="referencias.html">Referencias consultadas</a> · <a href="https://github.com/Yansel17/teoria-compiladores">Código fuente del portal</a></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+
+</body>
+</html>

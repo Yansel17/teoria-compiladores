@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compiladores actuales · Teoría de Compiladores</title>
+<meta name="description" content="Los principales compiladores usados hoy en la programación (GCC, Clang/LLVM, MSVC, javac, Roslyn, rustc, Go, Kotlin, Swift, TypeScript), con sus lenguajes, representación intermedia y uso.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a3ca8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7h6l2 3-2 3H3z'/%3E%3Cpath d='M13 10h4'/%3E%3Cpath d='M15 7l3 3-3 3'/%3E%3Cpath d='M4 17h16'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 3-2 3H3z"/><path d="M13 10h4"/><path d="M15 7l3 3-3 3"/><path d="M4 17h16"/></svg> Teoría de Compiladores</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-principal">Menú</button>
+    <nav aria-label="Secciones del portal">
+      <ul class="nav" id="nav-principal">
+        <li><a href="index.html">Portada</a></li>
+        <li><a href="compiladores.html">Compiladores y autómatas</a></li>
+        <li><a href="estructura.html">Estructura</a></li>
+        <li><a href="fases.html">Fases</a></li>
+        <li><a href="codigo.html">Código intermedio y final</a></li>
+        <li><a href="actuales.html">Compiladores actuales</a></li>
+        <li><a href="laboratorio.html">Laboratorio</a></li>
+        <li><a href="glosario.html">Glosario</a></li>
+        <li><a href="referencias.html">Referencias</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <p class="kicker">Sección 5</p>
+    <h1>Principales compiladores empleados en la actualidad</h1>
+    <p class="lead">La teoría de las secciones anteriores está detrás de herramientas que millones de programadores ejecutan cada día. Estas son las más usadas, con el lenguaje que traducen, la representación intermedia que emplean y el dato que las hace relevantes.</p>
+  </div>
+
+  <h2 class="mt-0">Compiladores de propósito general</h2>
+  <div class="grid-3">
+    <article class="ficha">
+      <h3>GCC</h3>
+      <p class="lang">GNU Compiler Collection · C, C++, Fortran, Ada, Go, D, Objective-C</p>
+      <dl>
+        <dt>Desde</dt><dd>1987 (Richard Stallman, proyecto GNU)</dd>
+        <dt>IR</dt><dd>GENERIC → GIMPLE (SSA) → RTL</dd>
+        <dt>Licencia</dt><dd>GPL (software libre)</dd>
+      </dl>
+      <p>Es el compilador del sistema en casi todas las distribuciones de Linux y el que compila el núcleo Linux. Su diseño con tres representaciones intermedias (una por nivel de abstracción) es un ejemplo de libro del modelo front-end / back-end.</p>
+      <a class="link" href="https://gcc.gnu.org/">gcc.gnu.org</a>
+    </article>
+    <article class="ficha">
+      <h3>Clang / LLVM</h3>
+      <p class="lang">C, C++, Objective-C (Clang) · infraestructura para muchos otros lenguajes (LLVM)</p>
+      <dl>
+        <dt>Desde</dt><dd>LLVM 2003 (Chris Lattner, Univ. de Illinois); Clang 2007</dd>
+        <dt>IR</dt><dd>LLVM IR (SSA, tipada)</dd>
+        <dt>Licencia</dt><dd>Apache 2.0 con excepciones LLVM</dd>
+      </dl>
+      <p>Clang es el front-end; LLVM aporta los optimizadores y los back-ends. Es el compilador por defecto en macOS, iOS, Android NDK y FreeBSD, y su IR la reutilizan Rust, Swift, Zig, Julia y muchos más: la idea "N + M" hecha realidad.</p>
+      <a class="link" href="https://llvm.org/">llvm.org</a> · <a class="link" href="https://clang.llvm.org/">clang.llvm.org</a>
+    </article>
+    <article class="ficha">
+      <h3>MSVC</h3>
+      <p class="lang">Microsoft Visual C++ · C, C++</p>
+      <dl>
+        <dt>Desde</dt><dd>1993 (Visual C++ 1.0)</dd>
+        <dt>IR</dt><dd>propia; no usa LLVM</dd>
+        <dt>Licencia</dt><dd>propietaria, gratuita con Visual Studio Community</dd>
+      </dl>
+      <p>El compilador <code>cl.exe</code> incluido en Visual Studio. Es la referencia para desarrollo nativo en Windows (Windows API, DirectX, drivers) y el que compila el propio Windows y Office.</p>
+      <a class="link" href="https://learn.microsoft.com/cpp/">learn.microsoft.com/cpp</a>
+    </article>
+  </div>
+
+  <h2>Compiladores a código intermedio con máquina virtual</h2>
+  <div class="grid-3">
+    <article class="ficha">
+      <h3>javac + HotSpot</h3>
+      <p class="lang">Java (OpenJDK)</p>
+      <dl>
+        <dt>Desde</dt><dd>1995 (Sun Microsystems); OpenJDK 2006</dd>
+        <dt>IR</dt><dd>bytecode de la JVM (archivos <code>.class</code>)</dd>
+        <dt>Licencia</dt><dd>GPLv2 con excepción Classpath</dd>
+      </dl>
+      <p><code>javac</code> hace el front-end y genera bytecode; la máquina virtual HotSpot lo interpreta y lo compila con sus JIT (C1 y C2) a código nativo mientras el programa corre. Kotlin, Scala y Groovy producen el mismo bytecode y comparten la JVM.</p>
+      <a class="link" href="https://openjdk.org/">openjdk.org</a>
+    </article>
+    <article class="ficha">
+      <h3>Roslyn + RyuJIT</h3>
+      <p class="lang">C#, Visual Basic (.NET)</p>
+      <dl>
+        <dt>Desde</dt><dd>C# 2002; Roslyn de código abierto desde 2014</dd>
+        <dt>IR</dt><dd>CIL (Common Intermediate Language) + metadatos</dd>
+        <dt>Licencia</dt><dd>MIT</dd>
+      </dl>
+      <p>Roslyn, la ".NET Compiler Platform", es el compilador de C# escrito en C# (autoalojado). Además de compilar expone su árbol sintáctico y su análisis semántico como API, lo que permite construir analizadores y refactorizaciones en Visual Studio. El CLR termina el trabajo con el JIT RyuJIT, o antes de tiempo con Native AOT.</p>
+      <a class="link" href="https://github.com/dotnet/roslyn">github.com/dotnet/roslyn</a>
+    </article>
+    <article class="ficha">
+      <h3>kotlinc</h3>
+      <p class="lang">Kotlin</p>
+      <dl>
+        <dt>Desde</dt><dd>2016 (Kotlin 1.0, JetBrains)</dd>
+        <dt>IR</dt><dd>bytecode JVM; también LLVM IR (Kotlin/Native) y JavaScript (Kotlin/JS)</dd>
+        <dt>Licencia</dt><dd>Apache 2.0</dd>
+      </dl>
+      <p>Lenguaje oficial para Android desde 2019. Un solo front-end con tres back-ends distintos: otro ejemplo de que separar análisis y síntesis permite apuntar a varias plataformas.</p>
+      <a class="link" href="https://kotlinlang.org/">kotlinlang.org</a>
+    </article>
+  </div>
+
+  <h2>Compiladores de lenguajes modernos de sistemas</h2>
+  <div class="grid-3">
+    <article class="ficha">
+      <h3>rustc</h3>
+      <p class="lang">Rust</p>
+      <dl>
+        <dt>Desde</dt><dd>2015 (Rust 1.0, Mozilla; hoy Rust Foundation)</dd>
+        <dt>IR</dt><dd>HIR → MIR → LLVM IR (back-ends alternativos: Cranelift, GCC)</dd>
+        <dt>Licencia</dt><dd>MIT / Apache 2.0</dd>
+      </dl>
+      <p>Su fase de análisis semántico es famosa: el <em>borrow checker</em> verifica en tiempo de compilación que el programa no tenga errores de memoria ni condiciones de carrera. Rust se usa en Linux, Android, Windows y Firefox.</p>
+      <a class="link" href="https://www.rust-lang.org/">rust-lang.org</a>
+    </article>
+    <article class="ficha">
+      <h3>Go (gc)</h3>
+      <p class="lang">Go</p>
+      <dl>
+        <dt>Desde</dt><dd>2012 (Go 1.0, Google)</dd>
+        <dt>IR</dt><dd>propia, en forma SSA</dd>
+        <dt>Licencia</dt><dd>BSD</dd>
+      </dl>
+      <p>Go tiene su propio back-end en lugar de LLVM, una decisión tomada para que la compilación fuera muy rápida. Compilar para otro sistema operativo o arquitectura es tan simple como cambiar dos variables de entorno.</p>
+      <a class="link" href="https://go.dev/">go.dev</a>
+    </article>
+    <article class="ficha">
+      <h3>swiftc</h3>
+      <p class="lang">Swift</p>
+      <dl>
+        <dt>Desde</dt><dd>2014 (Apple); código abierto desde 2015</dd>
+        <dt>IR</dt><dd>SIL (Swift Intermediate Language) → LLVM IR</dd>
+        <dt>Licencia</dt><dd>Apache 2.0</dd>
+      </dl>
+      <p>Lenguaje principal para iOS y macOS. Usa una IR propia de alto nivel (SIL) para optimizaciones específicas del lenguaje antes de bajar a LLVM IR: dos niveles de código intermedio en un mismo compilador.</p>
+      <a class="link" href="https://www.swift.org/">swift.org</a>
+    </article>
+  </div>
+
+  <h2>Un caso especial: el compilador de TypeScript</h2>
+  <div class="panel">
+    <p><code>tsc</code> traduce TypeScript a JavaScript, es decir, de un lenguaje de alto nivel a otro. A esto se le llama <strong>transpilador</strong> o compilador fuente-a-fuente. Realiza análisis léxico, sintáctico y, sobre todo, un análisis semántico muy completo (la verificación de tipos es su razón de ser), pero su "código final" es JavaScript legible. Desde 2012 lo desarrolla Microsoft bajo licencia Apache 2.0, y en 2025 anunció una reescritura nativa del compilador en Go para acelerar la compilación de proyectos grandes. <a href="https://www.typescriptlang.org/">typescriptlang.org</a></p>
+  </div>
+
+  <h2>¿Cuáles se usan más?</h2>
+  <p>Entre los desarrolladores de C, la encuesta <em>The State of C 2025</em> de JetBrains registró el siguiente uso de compiladores (la suma supera 100 % porque muchos usan más de uno):</p>
+  <ul class="barras" aria-label="Uso de compiladores entre desarrolladores de C según JetBrains, 2025">
+    <li><span>GCC</span><div class="bar"><i style="width:82%"></i></div><b>82 %</b></li>
+    <li><span>Clang</span><div class="bar"><i style="width:44%"></i></div><b>44 %</b></li>
+    <li><span>MSVC</span><div class="bar"><i style="width:21%"></i></div><b>21 %</b></li>
+    <li><span>Keil</span><div class="bar"><i style="width:11%"></i></div><b>11 %</b></li>
+    <li><span>clang-cl</span><div class="bar"><i style="width:8%"></i></div><b>8 %</b></li>
+  </ul>
+  <p><small>Fuente: JetBrains, <a href="https://lp.jetbrains.com/the-state-of-c-2025/">The State of C 2025</a>. Keil es un compilador para sistemas embebidos; clang-cl es Clang con la interfaz de línea de comandos de MSVC.</small></p>
+  <p>Fuera del mundo C/C++, el "compilador más usado" depende del ecosistema: javac y la JVM en Java y Android (con Kotlin), Roslyn en .NET, rustc en Rust, y tsc en el desarrollo web, donde buena parte del código JavaScript que se despliega pasa antes por TypeScript.</p>
+
+  <h2>Línea de tiempo</h2>
+  <ul class="timeline">
+    <li><b>1952</b> Grace Hopper desarrolla el sistema A-0 y populariza la palabra "compilador".</li>
+    <li><b>1957</b> FORTRAN (IBM, John Backus): el primer compilador optimizador de uso masivo.</li>
+    <li><b>1972</b> Nace C en Bell Labs (Dennis Ritchie), diseñado para que su compilador fuera portable.</li>
+    <li><b>1975</b> Lex y Yacc: generadores de analizadores léxicos y sintácticos a partir de expresiones regulares y gramáticas.</li>
+    <li><b>1986</b> Primera edición del <em>Dragon Book</em> de Aho, Sethi y Ullman; la segunda, con Monica Lam, es de 2006.</li>
+    <li><b>1987</b> Primera versión de GCC.</li>
+    <li><b>1995</b> Java: compilación a bytecode y ejecución en una máquina virtual.</li>
+    <li><b>2002</b> .NET Framework 1.0 y C#: compilación a CIL y JIT en el CLR.</li>
+    <li><b>2003</b> LLVM 1.0; Clang llega en 2007.</li>
+    <li><b>2012</b> Go 1.0 y TypeScript.</li>
+    <li><b>2014</b> Microsoft libera Roslyn como código abierto; Apple presenta Swift.</li>
+    <li><b>2015</b> Rust 1.0.</li>
+    <li><b>2016</b> Kotlin 1.0.</li>
+  </ul>
+
+  <nav class="pager" aria-label="Navegación entre secciones">
+<a href="codigo.html"><span>Anterior</span>← Código intermedio y final</a>
+<a href="laboratorio.html"><span>Siguiente</span>Laboratorio →</a>
+</nav>
+</main>
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>Portal académico · Teoría de Compiladores · <span data-anio></span></div>
+    <div><a href="referencias.html">Referencias consultadas</a> · <a href="https://github.com/Yansel17/teoria-compiladores">Código fuente del portal</a></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+
+</body>
+</html>

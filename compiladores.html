@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compiladores y autómatas · Teoría de Compiladores</title>
+<meta name="description" content="Qué es un compilador, en qué se diferencia de un intérprete y cómo la Teoría de Autómatas y Lenguajes Formales sustenta cada una de sus fases.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a3ca8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7h6l2 3-2 3H3z'/%3E%3Cpath d='M13 10h4'/%3E%3Cpath d='M15 7l3 3-3 3'/%3E%3Cpath d='M4 17h16'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 3-2 3H3z"/><path d="M13 10h4"/><path d="M15 7l3 3-3 3"/><path d="M4 17h16"/></svg> Teoría de Compiladores</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-principal">Menú</button>
+    <nav aria-label="Secciones del portal">
+      <ul class="nav" id="nav-principal">
+        <li><a href="index.html">Portada</a></li>
+        <li><a href="compiladores.html">Compiladores y autómatas</a></li>
+        <li><a href="estructura.html">Estructura</a></li>
+        <li><a href="fases.html">Fases</a></li>
+        <li><a href="codigo.html">Código intermedio y final</a></li>
+        <li><a href="actuales.html">Compiladores actuales</a></li>
+        <li><a href="laboratorio.html">Laboratorio</a></li>
+        <li><a href="glosario.html">Glosario</a></li>
+        <li><a href="referencias.html">Referencias</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <p class="kicker">Sección 1</p>
+    <h1>¿Qué es un compilador y qué tiene que ver con los autómatas?</h1>
+    <p class="lead">Un compilador es un traductor entre dos lenguajes. La Teoría de Autómatas y Lenguajes Formales es la matemática que explica cómo reconocer, sin ambigüedad, qué textos pertenecen a un lenguaje y cuáles no.</p>
+  </div>
+
+  <h2 class="mt-0">Definición</h2>
+  <p>Un <strong>compilador</strong> es un programa que lee un programa escrito en un <em>lenguaje fuente</em> (C, C++, Java, C#, Rust…) y lo traduce a un programa equivalente en un <em>lenguaje objeto</em>, normalmente código máquina o un código intermedio como el bytecode de Java o el CIL de .NET. Mientras traduce, también tiene una segunda tarea igual de importante: <strong>detectar y reportar errores</strong> del programa fuente, con el mensaje y la ubicación más útiles posibles.</p>
+  <p>La definición clásica proviene del libro de Aho, Lam, Sethi y Ullman, conocido como el <em>Dragon Book</em>, que sigue siendo la referencia principal del área (ver <a href="referencias.html">Referencias</a>).</p>
+
+  <figure>
+    <svg viewBox="0 0 760 170" role="img" aria-labelledby="fig1t">
+      <title id="fig1t">Esquema de un compilador: el programa fuente entra, el compilador lo traduce y produce un programa objeto; los errores se reportan aparte.</title>
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2b3449"/></marker>
+      </defs>
+      <rect x="20" y="55" width="170" height="60" rx="6" fill="#eceef3" stroke="#b9c0cf"/>
+      <text x="105" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" fill="#141c2e">programa fuente</text>
+      <text x="105" y="100" text-anchor="middle" font-family="Literata, serif" font-size="12" fill="#5b6478" font-style="italic">escrito por personas</text>
+      <line x1="190" y1="85" x2="270" y2="85" stroke="#2b3449" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="275" y="40" width="210" height="90" rx="6" fill="#141c2e"/>
+      <text x="380" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="16" font-weight="600" fill="#fff">compilador</text>
+      <text x="380" y="104" text-anchor="middle" font-family="Literata, serif" font-size="12" fill="#c7cfe0" font-style="italic">traduce y verifica</text>
+      <line x1="485" y1="85" x2="565" y2="85" stroke="#2b3449" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="570" y="55" width="170" height="60" rx="6" fill="#dff1ee" stroke="#167c73"/>
+      <text x="655" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" fill="#141c2e">programa objeto</text>
+      <text x="655" y="100" text-anchor="middle" font-family="Literata, serif" font-size="12" fill="#5b6478" font-style="italic">ejecutable por la máquina</text>
+      <line x1="380" y1="130" x2="380" y2="150" stroke="#b9741a" stroke-width="2" marker-end="url(#ar)" stroke-dasharray="4 3"/>
+      <text x="380" y="166" text-anchor="middle" font-family="Literata, serif" font-size="12" fill="#b9741a" font-style="italic">mensajes de error</text>
+    </svg>
+    <figcaption><b>Figura 1.</b> Visión de caja negra de un compilador. Lo que ocurre dentro de la caja se desarrolla en <a href="estructura.html">Estructura</a> y <a href="fases.html">Fases</a>.</figcaption>
+  </figure>
+
+  <h2>Compilador, intérprete y modelos híbridos</h2>
+  <p>No todos los lenguajes se traducen de la misma forma. La diferencia está en <em>cuándo</em> se hace la traducción y <em>qué</em> se entrega al usuario:</p>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Modelo</th><th>Cómo trabaja</th><th>Ejemplos</th></tr></thead>
+    <tbody>
+      <tr><td>Compilador</td><td>Traduce todo el programa antes de ejecutarlo y produce un archivo objeto o ejecutable. La traducción se hace una sola vez; la ejecución es directa y rápida.</td><td>C, C++, Rust, Go</td></tr>
+      <tr><td>Intérprete</td><td>Lee el programa fuente y lo ejecuta instrucción por instrucción, sin producir un ejecutable. Más flexible, pero más lento.</td><td>Python clásico, JavaScript clásico, shell</td></tr>
+      <tr><td>Híbrido</td><td>Un compilador traduce a un <em>código intermedio</em> portable (bytecode, CIL) y una máquina virtual lo interpreta o lo compila <em>justo a tiempo</em> (JIT) a código nativo mientras el programa corre.</td><td>Java (bytecode + JVM), C# (CIL + CLR)</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="nota">
+    <p>En la práctica los límites se cruzan: los motores modernos de JavaScript (V8) compilan con JIT, y .NET puede compilar <em>antes de tiempo</em> (AOT) a código nativo. Lo que define a un compilador no es el formato de salida, sino que realiza una <strong>traducción completa con verificación</strong>.</p>
+  </div>
+
+  <h2>Vinculación con la Teoría de Autómatas y Lenguajes Formales</h2>
+  <p>Un lenguaje de programación es, formalmente, un <strong>lenguaje formal</strong>: un conjunto de cadenas construidas sobre un alfabeto siguiendo reglas precisas. Para que un compilador decida si un programa es válido necesita dos cosas que esa teoría le da: una forma de <em>describir</em> el lenguaje (gramáticas y expresiones regulares) y una forma de <em>reconocerlo</em> mecánicamente (autómatas).</p>
+  <p>La <strong>jerarquía de Chomsky</strong> clasifica los lenguajes en cuatro tipos según la potencia de la gramática que los genera, y a cada tipo le corresponde un modelo de máquina capaz de reconocerlo. Lo interesante para los compiladores es que las dos primeras fases usan exactamente los dos niveles inferiores de esa jerarquía:</p>
+
+  <figure>
+    <svg viewBox="0 0 760 330" role="img" aria-labelledby="fig2t">
+      <title id="fig2t">Jerarquía de Chomsky como óvalos anidados, con el autómata correspondiente a cada nivel y la fase del compilador que lo usa.</title>
+      <ellipse cx="250" cy="165" rx="235" ry="150" fill="#f5f6f8" stroke="#b9c0cf"/>
+      <ellipse cx="250" cy="178" rx="195" ry="120" fill="#eceef3" stroke="#b9c0cf"/>
+      <ellipse cx="250" cy="192" rx="150" ry="88" fill="#dff1ee" stroke="#167c73"/>
+      <ellipse cx="250" cy="208" rx="100" ry="55" fill="#ebe5f8" stroke="#5a3ca8"/>
+      <text x="250" y="40" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#2b3449">Tipo 0 · recursivamente enumerables</text>
+      <text x="250" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#2b3449">Tipo 1 · sensibles al contexto</text>
+      <text x="250" y="125" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#167c73">Tipo 2 · libres de contexto</text>
+      <text x="250" y="200" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#5a3ca8">Tipo 3 · regulares</text>
+      <text x="250" y="222" text-anchor="middle" font-family="Literata, serif" font-size="12" fill="#5a3ca8" font-style="italic">autómata finito · expresiones regulares</text>
+      <text x="250" y="262" text-anchor="middle" font-family="Literata, serif" font-size="12" fill="#167c73" font-style="italic">autómata con pila · gramáticas BNF</text>
+      <text x="250" y="296" text-anchor="middle" font-family="Literata, serif" font-size="12" fill="#2b3449" font-style="italic">máquina de Turing</text>
+      <g font-family="Literata, serif" font-size="13" fill="#141c2e">
+        <line x1="352" y1="208" x2="520" y2="208" stroke="#5a3ca8" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="530" y="203" fill="#5a3ca8" font-family="IBM Plex Mono, monospace" font-weight="600">Análisis léxico</text>
+        <text x="530" y="222" font-style="italic" fill="#5b6478">reconoce los tokens</text>
+        <line x1="402" y1="150" x2="520" y2="150" stroke="#167c73" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="530" y="145" fill="#167c73" font-family="IBM Plex Mono, monospace" font-weight="600">Análisis sintáctico</text>
+        <text x="530" y="164" font-style="italic" fill="#5b6478">reconoce la estructura</text>
+        <line x1="470" y1="80" x2="520" y2="80" stroke="#2b3449" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="530" y="75" fill="#2b3449" font-family="IBM Plex Mono, monospace" font-weight="600">Análisis semántico</text>
+        <text x="530" y="94" font-style="italic" fill="#5b6478">lo que la gramática no alcanza</text>
+      </g>
+    </svg>
+    <figcaption><b>Figura 2.</b> Cada nivel de la jerarquía de Chomsky contiene al anterior. Un compilador usa el nivel más simple que le sirve para cada tarea, porque cuanto más simple el modelo, más rápido y predecible es el reconocedor.</figcaption>
+  </figure>
+
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Nivel</th><th>Gramática</th><th>Reconocedor</th><th>Uso en el compilador</th></tr></thead>
+    <tbody>
+      <tr><td>Tipo 3</td><td>Regular (expresiones regulares)</td><td>Autómata finito (AFD/AFN)</td><td><span class="fase-tag analisis">léxico</span> Definir y reconocer tokens: identificadores, números, palabras clave, operadores.</td></tr>
+      <tr><td>Tipo 2</td><td>Libre de contexto (BNF/EBNF)</td><td>Autómata con pila</td><td><span class="fase-tag analisis">sintáctico</span> Definir la estructura: expresiones, sentencias, bloques anidados, paréntesis balanceados.</td></tr>
+      <tr><td>Tipo 1 y 0</td><td>Sensible al contexto / sin restricción</td><td>Máquina de Turing</td><td><span class="fase-tag analisis">semántico</span> Reglas como "declarar antes de usar" o "los tipos deben coincidir" no caben en una gramática libre de contexto; se verifican con código, no con un autómata.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Ejemplo: un token descrito con una expresión regular y su autómata</h3>
+  <p>Un identificador en C# empieza con una letra o guion bajo y continúa con letras, dígitos o guiones bajos. Esa regla cabe en una expresión regular, y toda expresión regular se puede convertir en un autómata finito que la reconoce carácter a carácter:</p>
+  <pre><code>identificador = [a-zA-Z_][a-zA-Z0-9_]*</code></pre>
+  <figure>
+    <svg viewBox="0 0 560 150" role="img" aria-labelledby="fig3t">
+      <title id="fig3t">Autómata finito de dos estados que reconoce identificadores: desde el estado inicial, una letra o guion bajo lleva al estado de aceptación, que se repite con letras, dígitos o guiones bajos.</title>
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5a3ca8"/></marker></defs>
+      <line x1="30" y1="80" x2="95" y2="80" stroke="#5a3ca8" stroke-width="2" marker-end="url(#ar2)"/>
+      <circle cx="130" cy="80" r="32" fill="#fff" stroke="#5a3ca8" stroke-width="2"/>
+      <text x="130" y="85" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" fill="#141c2e">q0</text>
+      <line x1="162" y1="80" x2="328" y2="80" stroke="#5a3ca8" stroke-width="2" marker-end="url(#ar2)"/>
+      <text x="245" y="68" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#5a3ca8">letra | _</text>
+      <circle cx="365" cy="80" r="32" fill="#ebe5f8" stroke="#5a3ca8" stroke-width="2"/>
+      <circle cx="365" cy="80" r="26" fill="none" stroke="#5a3ca8" stroke-width="2"/>
+      <text x="365" y="85" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" fill="#141c2e">q1</text>
+      <path d="M352 50 C 330 5, 400 5, 378 50" fill="none" stroke="#5a3ca8" stroke-width="2" marker-end="url(#ar2)"/>
+      <text x="365" y="20" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#5a3ca8">letra | dígito | _</text>
+      <text x="470" y="78" font-family="Literata, serif" font-size="12" fill="#5b6478" font-style="italic">doble círculo =</text>
+      <text x="470" y="96" font-family="Literata, serif" font-size="12" fill="#5b6478" font-style="italic">estado de aceptación</text>
+    </svg>
+    <figcaption><b>Figura 3.</b> Al leer <code>total2</code>, el autómata entra en q1 con la <code>t</code> y permanece ahí con cada carácter siguiente; al terminar la entrada en un estado de aceptación, el lexema es un identificador válido. Herramientas como Lex o Flex construyen estos autómatas automáticamente a partir de expresiones regulares.</figcaption>
+  </figure>
+
+  <h3>Ejemplo: una gramática libre de contexto para expresiones</h3>
+  <p>Los paréntesis anidados no se pueden describir con una expresión regular, porque un autómata finito no tiene memoria para contar cuántos quedan abiertos. Una gramática libre de contexto sí puede, gracias a la recursión, y el autómata con pila la reconoce:</p>
+  <pre><code><span class="k">expresion</span> → expresion <span class="n">+</span> termino | termino
+<span class="k">termino</span>   → termino <span class="n">*</span> factor | factor
+<span class="k">factor</span>    → <span class="n">(</span> expresion <span class="n">)</span> | <span class="t">id</span> | <span class="t">num</span></code></pre>
+  <p>Con estas tres reglas el analizador sintáctico sabe que en <code>a + b * c</code> la multiplicación se resuelve primero (está más abajo en la gramática) y que <code>(a + b) * c</code> cambia ese orden. Generadores como Yacc, Bison o ANTLR construyen el analizador a partir de la gramática.</p>
+
+  <div class="nota analisis">
+    <p><strong>En resumen:</strong> la Teoría de Autómatas y Lenguajes Formales no es un tema "aparte" del compilador. Es la razón por la que el análisis léxico se implementa con autómatas finitos, el sintáctico con autómatas con pila y gramáticas, y por la que ciertas comprobaciones quedan para el análisis semántico.</p>
+  </div>
+
+  <nav class="pager" aria-label="Navegación entre secciones">
+<a href="index.html"><span>Anterior</span>← Portada</a>
+<a href="estructura.html"><span>Siguiente</span>Estructura →</a>
+</nav>
+</main>
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>Portal académico · Teoría de Compiladores · <span data-anio></span></div>
+    <div><a href="referencias.html">Referencias consultadas</a> · <a href="https://github.com/Yansel17/teoria-compiladores">Código fuente del portal</a></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referencias · Teoría de Compiladores</title>
+<meta name="description" content="Libros, documentación oficial, encuestas y apuntes universitarios consultados para elaborar el portal sobre Teoría de Compiladores, con enlaces.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a3ca8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7h6l2 3-2 3H3z'/%3E%3Cpath d='M13 10h4'/%3E%3Cpath d='M15 7l3 3-3 3'/%3E%3Cpath d='M4 17h16'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 3-2 3H3z"/><path d="M13 10h4"/><path d="M15 7l3 3-3 3"/><path d="M4 17h16"/></svg> Teoría de Compiladores</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-principal">Menú</button>
+    <nav aria-label="Secciones del portal">
+      <ul class="nav" id="nav-principal">
+        <li><a href="index.html">Portada</a></li>
+        <li><a href="compiladores.html">Compiladores y autómatas</a></li>
+        <li><a href="estructura.html">Estructura</a></li>
+        <li><a href="fases.html">Fases</a></li>
+        <li><a href="codigo.html">Código intermedio y final</a></li>
+        <li><a href="actuales.html">Compiladores actuales</a></li>
+        <li><a href="laboratorio.html">Laboratorio</a></li>
+        <li><a href="glosario.html">Glosario</a></li>
+        <li><a href="referencias.html">Referencias</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <p class="kicker">Sección 8</p>
+    <h1>Referencias consultadas</h1>
+    <p class="lead">Fuentes usadas para elaborar el contenido del portal. Cada entrada indica en qué sección se utilizó. Todos los enlaces abren la fuente original.</p>
+  </div>
+
+  <h2 class="mt-0">Libros y manuales de referencia</h2>
+  <ol class="refs">
+    <li>Aho, A. V., Lam, M. S., Sethi, R. y Ullman, J. D. (2006). <em>Compilers: Principles, Techniques, and Tools</em> (2.ª ed.). Pearson. <a href="https://www.pearson.com/store/en-us/p/compilers-principles-techniques-and-tools/P200000003472">https://www.pearson.com/store/en-us/p/compilers-principles-techniques-and-tools/P200000003472</a>
+      <span class="uso">Definición de compilador, modelo análisis–síntesis, fases, código de tres direcciones y el ejemplo <code>posicion = inicial + velocidad * 60</code>. Secciones 1 a 4.</span></li>
+    <li>Wikipedia. <em>Compilers: Principles, Techniques, and Tools</em> (el "Dragon Book"). <a href="https://en.wikipedia.org/wiki/Compilers:_Principles,_Techniques,_and_Tools">https://en.wikipedia.org/wiki/Compilers:_Principles,_Techniques,_and_Tools</a>
+      <span class="uso">Historia de las ediciones del libro. Línea de tiempo, sección 5.</span></li>
+    <li>LLVM Project. <em>LLVM Language Reference Manual</em>. <a href="https://llvm.org/docs/LangRef.html">https://llvm.org/docs/LangRef.html</a>
+      <span class="uso">Características de LLVM IR (SSA, tipado, representación común a todas las fases). Secciones 4 y 5.</span></li>
+    <li>Free Software Foundation. <em>GNU Compiler Collection (GCC) Internals</em>: Tree SSA, GIMPLE y RTL. <a href="https://gcc.gnu.org/onlinedocs/gccint/">https://gcc.gnu.org/onlinedocs/gccint/</a> y <a href="https://gcc.gnu.org/wiki/GIMPLE">https://gcc.gnu.org/wiki/GIMPLE</a>
+      <span class="uso">Las tres representaciones intermedias de GCC (GENERIC, GIMPLE, RTL). Secciones 2, 4 y 5.</span></li>
+    <li>Novillo, D. (2006). <em>An Architectural Overview of GCC</em>. Linux Symposium, Ottawa. <a href="https://www.airs.com/dnovillo/Papers/ols2006-slides.pdf">https://www.airs.com/dnovillo/Papers/ols2006-slides.pdf</a>
+      <span class="uso">GIMPLE como representación de tres direcciones y organización de los optimizadores de GCC. Sección 4.</span></li>
+    <li>Microsoft Learn. <em>Managed execution process</em> (.NET). <a href="https://learn.microsoft.com/dotnet/standard/managed-execution-process">https://learn.microsoft.com/dotnet/standard/managed-execution-process</a>
+      <span class="uso">Compilación de C# a CIL con metadatos, verificación y compilación JIT a código nativo. Secciones 2, 4 y 5.</span></li>
+    <li>.NET Foundation. <em>The .NET Compiler Platform ("Roslyn")</em>. Repositorio en GitHub. <a href="https://github.com/dotnet/roslyn">https://github.com/dotnet/roslyn</a>
+      <span class="uso">Compiladores de C# y Visual Basic de código abierto con API de análisis. Sección 5.</span></li>
+  </ol>
+
+  <h2>Apuntes y material universitario</h2>
+  <ol class="refs" start="8">
+    <li>Gutiérrez, J. y González, M. (2008). <em>Compiladores</em>. Grupo de Computadores y Tiempo Real, Universidad de Cantabria. <a href="https://www.ctr.unican.es/asignaturas/lan/compila-2en1.pdf">https://www.ctr.unican.es/asignaturas/lan/compila-2en1.pdf</a>
+      <span class="uso">Etapas de análisis y síntesis, tabla de símbolos y transformación de la representación en cada fase. Secciones 2 y 3.</span></li>
+    <li>Universidad de Guanajuato. <em>Clase digital 5. Análisis léxico: Teoría de los lenguajes</em>. <a href="https://blogs.ugto.mx/rea/clase-digital-5-analisis-lexico-teoria-de-los-lenguajes/">https://blogs.ugto.mx/rea/clase-digital-5-analisis-lexico-teoria-de-los-lenguajes/</a>
+      <span class="uso">Relación entre expresiones regulares, autómatas finitos y la jerarquía de Chomsky. Sección 1.</span></li>
+    <li>Universidad de Guanajuato. <em>Clase digital 12. Análisis semántico y estrategias de implementación</em>. <a href="https://blogs.ugto.mx/rea/?p=16175">https://blogs.ugto.mx/rea/?p=16175</a>
+      <span class="uso">Verificación de tipos y organización de la tabla de símbolos por ámbitos. Secciones 2 y 3.</span></li>
+    <li>Sanchis, A., Ledezma, A., Iglesias, J. A., García, B. y Alonso, J. M. <em>Introducción a la Teoría de Autómatas y Lenguajes Formales</em>. OpenCourseWare, Universidad Carlos III de Madrid. <a href="https://ocw.uc3m.es/pluginfile.php/2776/mod_page/content/16/tema1_intro.pdf">https://ocw.uc3m.es/pluginfile.php/2776/mod_page/content/16/tema1_intro.pdf</a>
+      <span class="uso">Jerarquía de Chomsky y máquinas abstractas asociadas. Sección 1.</span></li>
+    <li>Lambdas Space. <em>Notas de compiladores 02: la fase de análisis</em>. <a href="https://lambdasspace.github.io/CMP/notas/cmp_n02.pdf">https://lambdasspace.github.io/CMP/notas/cmp_n02.pdf</a>
+      <span class="uso">Implementación del análisis léxico con autómatas finitos y construcción del árbol en el análisis sintáctico. Secciones 1 y 3.</span></li>
+    <li>Geurts, P. (2014). <em>Intermediate code generation</em>. Curso de compiladores, Universidad de Lieja. <a href="https://people.montefiore.uliege.be/geurts/Cours/compil/2013/05-intermediatecode-2013-2014.pdf">https://people.montefiore.uliege.be/geurts/Cours/compil/2013/05-intermediatecode-2013-2014.pdf</a>
+      <span class="uso">Posición de la generación de código intermedio como última fase del front-end y tipos de representaciones. Sección 4.</span></li>
+    <li>Engineering Hulk. <em>Intermediate Code Generation: Three-Address Code, DAG, Basic Blocks and Control Flow Graph</em>. <a href="https://engineeringhulk.com/cs-it/compiler-design/intermediate-code/">https://engineeringhulk.com/cs-it/compiler-design/intermediate-code/</a>
+      <span class="uso">Argumento N + M frente a N × M, cuádruplas y triples. Secciones 2 y 4.</span></li>
+  </ol>
+
+  <h2>Encuestas y artículos sobre compiladores actuales</h2>
+  <ol class="refs" start="15">
+    <li>JetBrains (2025). <em>The State of C 2025</em>. <a href="https://lp.jetbrains.com/the-state-of-c-2025/">https://lp.jetbrains.com/the-state-of-c-2025/</a>
+      <span class="uso">Porcentajes de uso de GCC, Clang, MSVC, Keil y clang-cl entre desarrolladores de C. Sección 5.</span></li>
+    <li>Analytics Insight (2026). <em>Best Free and Open Source Compilers for Developers in 2026</em>. <a href="https://www.analyticsinsight.net/programming/best-free-and-open-source-compilers-for-developers-in-2026">https://www.analyticsinsight.net/programming/best-free-and-open-source-compilers-for-developers-in-2026</a>
+      <span class="uso">Panorama de GCC, LLVM, Rust y Go como cadenas de herramientas dominantes. Sección 5.</span></li>
+    <li>Linux Magazine (2018). <em>GCC, Clang, and MSVC compilers with C++</em>. <a href="https://www.linux-magazine.com/index.php/Issues/2018/207/Compilers-and-Standards/(language)/eng-US">https://www.linux-magazine.com/index.php/Issues/2018/207/Compilers-and-Standards/(language)/eng-US</a>
+      <span class="uso">Clang como front-end y LLVM como back-end; compatibilidad con GCC. Sección 5.</span></li>
+  </ol>
+
+  <h2>Sitios oficiales de los compiladores citados</h2>
+  <ol class="refs" start="18">
+    <li>GCC, the GNU Compiler Collection. <a href="https://gcc.gnu.org/">https://gcc.gnu.org/</a></li>
+    <li>The LLVM Compiler Infrastructure y Clang. <a href="https://llvm.org/">https://llvm.org/</a> · <a href="https://clang.llvm.org/">https://clang.llvm.org/</a></li>
+    <li>Microsoft C++ (MSVC), documentación. <a href="https://learn.microsoft.com/cpp/">https://learn.microsoft.com/cpp/</a></li>
+    <li>OpenJDK. <a href="https://openjdk.org/">https://openjdk.org/</a></li>
+    <li>Rust Programming Language. <a href="https://www.rust-lang.org/">https://www.rust-lang.org/</a></li>
+    <li>The Go Programming Language. <a href="https://go.dev/">https://go.dev/</a></li>
+    <li>Kotlin Programming Language. <a href="https://kotlinlang.org/">https://kotlinlang.org/</a></li>
+    <li>Swift.org. <a href="https://www.swift.org/">https://www.swift.org/</a></li>
+    <li>TypeScript. <a href="https://www.typescriptlang.org/">https://www.typescriptlang.org/</a></li>
+  </ol>
+
+  <nav class="pager" aria-label="Navegación entre secciones">
+<a href="glosario.html"><span>Anterior</span>← Glosario</a>
+<span></span>
+</nav>
+</main>
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>Portal académico · Teoría de Compiladores · <span data-anio></span></div>
+    <div><a href="referencias.html">Referencias consultadas</a> · <a href="https://github.com/Yansel17/teoria-compiladores">Código fuente del portal</a></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+
+</body>
+</html>

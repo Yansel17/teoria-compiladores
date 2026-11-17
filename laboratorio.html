@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratorio interactivo · Teoría de Compiladores</title>
+<meta name="description" content="Un mini compilador que corre en el navegador y muestra, sobre el código que escribas, los tokens, el árbol sintáctico, la tabla de símbolos, el código de tres direcciones, las optimizaciones y el ensamblador generado.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a3ca8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7h6l2 3-2 3H3z'/%3E%3Cpath d='M13 10h4'/%3E%3Cpath d='M15 7l3 3-3 3'/%3E%3Cpath d='M4 17h16'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 3-2 3H3z"/><path d="M13 10h4"/><path d="M15 7l3 3-3 3"/><path d="M4 17h16"/></svg> Teoría de Compiladores</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-principal">Menú</button>
+    <nav aria-label="Secciones del portal">
+      <ul class="nav" id="nav-principal">
+        <li><a href="index.html">Portada</a></li>
+        <li><a href="compiladores.html">Compiladores y autómatas</a></li>
+        <li><a href="estructura.html">Estructura</a></li>
+        <li><a href="fases.html">Fases</a></li>
+        <li><a href="codigo.html">Código intermedio y final</a></li>
+        <li><a href="actuales.html">Compiladores actuales</a></li>
+        <li><a href="laboratorio.html">Laboratorio</a></li>
+        <li><a href="glosario.html">Glosario</a></li>
+        <li><a href="referencias.html">Referencias</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <p class="kicker">Sección 6 · elemento de interés</p>
+    <h1>Laboratorio: un mini compilador en el navegador</h1>
+    <p class="lead">Escribe un programa pequeño y compílalo. Cada panel de la derecha corresponde a una de las seis fases estudiadas y muestra exactamente qué entra y qué sale de ella. Los errores aparecen en la fase que los detecta, como en un compilador real.</p>
+  </div>
+
+  <div class="nota mt-0">
+    <p><strong>El lenguaje del laboratorio</strong> acepta declaraciones <code>int x = …;</code> y <code>float y = …;</code>, asignaciones <code>x = …;</code>, operadores <code>+ - * /</code>, paréntesis, negativos y comentarios <code>//</code>. Las reglas semánticas: toda variable se declara antes de usarse y una sola vez; <code>int</code> se convierte a <code>float</code> automáticamente, pero no al revés.</p>
+  </div>
+
+  <div class="lab">
+    <div>
+      <label for="fuente"><strong>Programa fuente</strong></label>
+      <textarea id="fuente" spellcheck="false" aria-describedby="ayuda-fuente"></textarea>
+      <p id="ayuda-fuente"><small>Ctrl + Enter también compila.</small></p>
+      <div class="controles">
+        <button id="btn-compilar" type="button">Compilar</button>
+        <button id="btn-limpiar" type="button" class="sec">Limpiar</button>
+        <label for="ejemplo"><small>Cargar ejemplo:</small></label>
+        <select id="ejemplo">
+          <option value="basico">Básico (tipos y promoción)</option>
+          <option value="optimizacion">Con optimizaciones</option>
+          <option value="lexico">Con error léxico</option>
+          <option value="sintactico">Con error sintáctico</option>
+          <option value="semantico">Con errores semánticos</option>
+        </select>
+      </div>
+      <p id="resumen" style="margin-top:1rem" aria-live="polite"></p>
+      <h3>Qué mirar en cada panel</h3>
+      <ul>
+        <li><strong>Léxico:</strong> los tokens, coloreados por tipo. Prueba a escribir <code>@</code> o <code>1.2.3</code>.</li>
+        <li><strong>Sintáctico:</strong> el árbol. Observa que <code>*</code> queda debajo de <code>+</code> aunque aparezca después en el texto.</li>
+        <li><strong>Semántico:</strong> el mismo árbol con el tipo de cada nodo y la tabla de símbolos. Mezcla <code>int</code> con <code>float</code> para ver aparecer <code>inttofloat</code>.</li>
+        <li><strong>Intermedio:</strong> código de tres direcciones con temporales <code>t1, t2…</code></li>
+        <li><strong>Optimización:</strong> qué se simplificó y por qué. Escribe <code>(2 + 3) * 4</code> o <code>x * 1</code>.</li>
+        <li><strong>Generación:</strong> ensamblador x86-64 (sintaxis Intel, simplificado): <code>eax</code> para enteros, <code>xmm0</code> para flotantes.</li>
+      </ul>
+    </div>
+
+    <div class="salida" aria-live="polite">
+      <section class="etapa analisis"><h3>1 · Análisis léxico <small>caracteres → tokens</small></h3><div id="out-lexico"></div></section>
+      <section class="etapa analisis"><h3>2 · Análisis sintáctico <small>tokens → árbol</small></h3><div id="out-sintactico"></div></section>
+      <section class="etapa analisis"><h3>3 · Análisis semántico <small>árbol → árbol anotado + tabla de símbolos</small></h3><div id="out-semantico"></div></section>
+      <section class="etapa analisis"><h3>4 · Código intermedio <small>tres direcciones</small></h3><div id="out-intermedio"></div></section>
+      <section class="etapa sintesis"><h3>5 · Optimización <small>mismo resultado, menos trabajo</small></h3><div id="out-optimizacion"></div></section>
+      <section class="etapa sintesis"><h3>6 · Generación de código <small>ensamblador x86-64</small></h3><div id="out-final"></div></section>
+    </div>
+  </div>
+
+  <h2>Cómo está hecho</h2>
+  <p>El laboratorio es un programa en JavaScript de unas 300 líneas (<code>assets/lab.js</code>) que implementa, de forma simplificada, las mismas técnicas descritas en el portal: un analizador léxico escrito a mano que funciona como un autómata finito, un analizador sintáctico descendente recursivo que sigue la gramática de expresiones de la <a href="compiladores.html">Sección 1</a>, un analizador semántico con tabla de símbolos y promoción de tipos, un generador de código de tres direcciones, un optimizador con plegado de constantes, simplificación algebraica y propagación de copias, y un generador de ensamblador que selecciona instrucciones distintas para enteros y flotantes.</p>
+
+  <nav class="pager" aria-label="Navegación entre secciones">
+<a href="actuales.html"><span>Anterior</span>← Compiladores actuales</a>
+<a href="glosario.html"><span>Siguiente</span>Glosario →</a>
+</nav>
+</main>
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>Portal académico · Teoría de Compiladores · <span data-anio></span></div>
+    <div><a href="referencias.html">Referencias consultadas</a> · <a href="https://github.com/Yansel17/teoria-compiladores">Código fuente del portal</a></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+<script src="assets/lab.js"></script>
+</body>
+</html>

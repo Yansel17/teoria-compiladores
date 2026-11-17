@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Código intermedio y final · Teoría de Compiladores</title>
+<meta name="description" content="Qué es la generación de código intermedio, qué formas toma (tres direcciones, bytecode, CIL, LLVM IR) y cómo la generación de código final la convierte en instrucciones de máquina.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a3ca8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7h6l2 3-2 3H3z'/%3E%3Cpath d='M13 10h4'/%3E%3Cpath d='M15 7l3 3-3 3'/%3E%3Cpath d='M4 17h16'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 3-2 3H3z"/><path d="M13 10h4"/><path d="M15 7l3 3-3 3"/><path d="M4 17h16"/></svg> Teoría de Compiladores</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-principal">Menú</button>
+    <nav aria-label="Secciones del portal">
+      <ul class="nav" id="nav-principal">
+        <li><a href="index.html">Portada</a></li>
+        <li><a href="compiladores.html">Compiladores y autómatas</a></li>
+        <li><a href="estructura.html">Estructura</a></li>
+        <li><a href="fases.html">Fases</a></li>
+        <li><a href="codigo.html">Código intermedio y final</a></li>
+        <li><a href="actuales.html">Compiladores actuales</a></li>
+        <li><a href="laboratorio.html">Laboratorio</a></li>
+        <li><a href="glosario.html">Glosario</a></li>
+        <li><a href="referencias.html">Referencias</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <p class="kicker">Sección 4</p>
+    <h1>Generación de código intermedio y final</h1>
+    <p class="lead">Entre el árbol que entiende el front-end y las instrucciones que entiende el procesador hay un paso intermedio deliberado. Esta sección explica por qué existe, qué formas toma y cómo se llega desde ahí al código máquina.</p>
+  </div>
+
+  <h2 class="mt-0">Código intermedio: un lenguaje para una máquina que no existe</h2>
+  <p>El <strong>código intermedio</strong> (o <em>representación intermedia</em>, IR) es una versión del programa más simple que el código fuente y más abstracta que el código máquina. Se parece a un ensamblador para una máquina idealizada: con tantos registros como se necesiten, sin peculiaridades de ningún procesador real.</p>
+  <p>Un compilador podría traducir directamente del árbol sintáctico al código máquina. Pasar por una representación intermedia es una decisión de diseño que aporta tres ventajas:</p>
+  <ul>
+    <li><strong>Portabilidad.</strong> El mismo front-end sirve para cualquier máquina: solo cambia el back-end. Es el esquema <em>N + M</em> descrito en <a href="estructura.html">Estructura</a>.</li>
+    <li><strong>Optimización.</strong> La mayoría de las mejoras (eliminar cálculos repetidos, simplificar expresiones, reorganizar bucles) se razonan mejor sobre instrucciones simples y uniformes que sobre un árbol o sobre código máquina lleno de detalles.</li>
+    <li><strong>Reutilización.</strong> Herramientas de análisis, depuración y verificación pueden trabajar sobre la IR sin conocer ni el lenguaje fuente ni el procesador.</li>
+  </ul>
+
+  <h3>Código de tres direcciones</h3>
+  <p>Es la forma más usada en los libros de texto y la base de muchas IR reales. Cada instrucción tiene a lo sumo <strong>un operador y tres "direcciones"</strong> (dos operandos y un resultado), y los resultados parciales se guardan en variables temporales <code>t1, t2, …</code> que el compilador inventa:</p>
+  <div class="grid-2">
+    <div>
+      <h4>Fuente</h4>
+      <pre><code>total = precio * cantidad + 5</code></pre>
+    </div>
+    <div>
+      <h4>Tres direcciones</h4>
+      <pre><code>t1 = precio * cantidad
+t2 = t1 + 5
+total = t2</code></pre>
+    </div>
+  </div>
+  <p>Las instrucciones de tres direcciones se almacenan en memoria como <strong>cuádruplas</strong> (operador, operando 1, operando 2, resultado) o como <strong>triples</strong>, que ahorran el campo de resultado refiriéndose a la posición de la instrucción. El flujo de control se expresa con etiquetas y saltos condicionales, igual que en un ensamblador:</p>
+  <pre><code>      <span class="c">// if (a &lt; b) max = b; else max = a;</span>
+      if a &lt; b goto L1
+      max = a
+      goto L2
+L1:   max = b
+L2:   …</code></pre>
+
+  <h3>Otras formas de representación intermedia</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Forma</th><th>Idea</th><th>Dónde se usa</th></tr></thead>
+    <tbody>
+      <tr><td>Árbol sintáctico / DAG</td><td>El propio árbol, con subexpresiones repetidas compartidas (grafo dirigido acíclico).</td><td>Front-ends; útil para detectar cálculos comunes.</td></tr>
+      <tr><td>Tres direcciones y SSA</td><td>Instrucciones lineales; en forma SSA cada variable se asigna una sola vez, lo que simplifica las optimizaciones.</td><td>LLVM IR, GIMPLE (GCC), la mayoría de los optimizadores modernos.</td></tr>
+      <tr><td>Bytecode de pila</td><td>Instrucciones para una máquina de pila: se apilan operandos y la operación consume la cima.</td><td>Bytecode de la JVM (Java, Kotlin), CIL de .NET (C#, F#, VB), bytecode de Python.</td></tr>
+      <tr><td>IR de bajo nivel</td><td>Muy cercana a la máquina, con registros y modos de direccionamiento, pero aún genérica.</td><td>RTL en GCC, Machine IR en LLVM.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <h3>El mismo cálculo en LLVM IR</h3>
+      <p>LLVM IR es una IR tipada en forma SSA: cada <code>%nombre</code> recibe un valor una sola vez. Clang, rustc y swiftc generan este código.</p>
+      <pre><code>%1 = mul i32 %precio, %cantidad
+%2 = add i32 %1, 5
+store i32 %2, ptr %total</code></pre>
+    </div>
+    <div class="panel">
+      <h3>El mismo cálculo en CIL (.NET)</h3>
+      <p>CIL es un bytecode de pila. El compilador de C# lo guarda dentro del ensamblado <code>.dll</code> junto con metadatos que describen los tipos.</p>
+      <pre><code>ldloc.0      <span class="c">// apila precio</span>
+ldloc.1      <span class="c">// apila cantidad</span>
+mul          <span class="c">// precio * cantidad</span>
+ldc.i4.5     <span class="c">// apila 5</span>
+add
+stloc.2      <span class="c">// guarda en total</span></code></pre>
+    </div>
+  </div>
+
+  <h2>Código final: hablar el idioma del procesador</h2>
+  <p>La <strong>generación de código final</strong> (o código objeto) es la última fase del compilador. Toma el código intermedio, ya optimizado, y produce instrucciones para una arquitectura concreta. Es la fase más dependiente de la máquina, y resuelve tres problemas:</p>
+  <ol>
+    <li><strong>Selección de instrucciones.</strong> Elegir qué instrucción (o secuencia) del procesador realiza cada operación intermedia. Un <code>t1 = a * 2</code> puede convertirse en una multiplicación, en un desplazamiento de bits o en una suma <code>a + a</code>, según cuál sea más barata.</li>
+    <li><strong>Asignación de registros.</strong> El procesador tiene pocos registros (16 de propósito general en x86-64) y son mucho más rápidos que la memoria. Hay que decidir qué variables y temporales viven en registros en cada momento, y cuáles se "derraman" a memoria. Es un problema de coloreo de grafos.</li>
+    <li><strong>Planificación de instrucciones.</strong> Ordenar las instrucciones para aprovechar la segmentación y el paralelismo interno del procesador sin alterar el resultado.</li>
+  </ol>
+
+  <div class="grid-2">
+    <div>
+      <h4>Tres direcciones (optimizado)</h4>
+      <pre><code>t1 = precio * cantidad
+total = t1 + 5</code></pre>
+    </div>
+    <div>
+      <h4>Ensamblador x86-64 (sintaxis Intel)</h4>
+      <pre><code>mov   eax, DWORD PTR [precio]
+imul  eax, DWORD PTR [cantidad]
+add   eax, 5
+mov   DWORD PTR [total], eax</code></pre>
+    </div>
+  </div>
+  <p>El texto en ensamblador pasa después por el <strong>ensamblador</strong>, que lo convierte en bytes, y por el <strong>enlazador</strong>, que une los distintos archivos objeto y bibliotecas en un ejecutable.</p>
+
+  <h2>¿Cuándo se genera el código final? AOT y JIT</h2>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>Antes de ejecutar (AOT)</h3>
+      <p>C, C++, Rust y Go producen el código máquina en el momento de compilar. El ejecutable ya contiene instrucciones nativas; el usuario no necesita el compilador ni una máquina virtual.</p>
+    </div>
+    <div class="panel">
+      <h3>Justo a tiempo (JIT)</h3>
+      <p>Java y .NET entregan código intermedio (bytecode, CIL). Cuando el programa se ejecuta, un compilador JIT dentro de la máquina virtual traduce cada método a código nativo <em>la primera vez que se llama</em> y guarda el resultado. Así el mismo archivo corre en cualquier arquitectura que tenga la máquina virtual, y el JIT puede optimizar con información que solo existe en ejecución.</p>
+    </div>
+  </div>
+  <div class="nota sintesis">
+    <p><strong>Ejemplo con .NET:</strong> cuando se compila un proyecto de C#, Roslyn genera CIL y metadatos dentro de un ensamblado. Al ejecutarlo, el CLR verifica que el CIL sea seguro en cuanto a tipos y el compilador JIT (RyuJIT) lo convierte a código nativo por método, bajo demanda. .NET también ofrece compilación AOT (ReadyToRun y Native AOT) para evitar ese trabajo en tiempo de ejecución. La fase de "generación de código final" existe en ambos casos; lo que cambia es el momento en que ocurre.</p>
+  </div>
+
+  <h2>Resumen de la sección</h2>
+  <ul>
+    <li>El <strong>código intermedio</strong> es la frontera entre front-end y back-end: independiente de la máquina, simple y pensado para optimizar.</li>
+    <li>Las formas más comunes son el código de tres direcciones (y su variante SSA) y los bytecodes de pila como JVM y CIL.</li>
+    <li>El <strong>código final</strong> es el código máquina de una arquitectura concreta; generarlo implica seleccionar instrucciones, asignar registros y planificar su orden.</li>
+    <li>El código final puede producirse antes de ejecutar (AOT) o durante la ejecución (JIT); la fase es la misma, cambia el momento.</li>
+  </ul>
+
+  <nav class="pager" aria-label="Navegación entre secciones">
+<a href="fases.html"><span>Anterior</span>← Fases</a>
+<a href="actuales.html"><span>Siguiente</span>Compiladores actuales →</a>
+</nav>
+</main>
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>Portal académico · Teoría de Compiladores · <span data-anio></span></div>
+    <div><a href="referencias.html">Referencias consultadas</a> · <a href="https://github.com/Yansel17/teoria-compiladores">Código fuente del portal</a></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+
+</body>
+</html>

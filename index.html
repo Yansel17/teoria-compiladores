@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portada · Teoría de Compiladores</title>
+<meta name="description" content="Portal web del equipo sobre Teoría de Compiladores: definición, estructura, fases, código intermedio y final, compiladores actuales y referencias.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a3ca8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7h6l2 3-2 3H3z'/%3E%3Cpath d='M13 10h4'/%3E%3Cpath d='M15 7l3 3-3 3'/%3E%3Cpath d='M4 17h16'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 3-2 3H3z"/><path d="M13 10h4"/><path d="M15 7l3 3-3 3"/><path d="M4 17h16"/></svg> Teoría de Compiladores</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-principal">Menú</button>
+    <nav aria-label="Secciones del portal">
+      <ul class="nav" id="nav-principal">
+        <li><a href="index.html">Portada</a></li>
+        <li><a href="compiladores.html">Compiladores y autómatas</a></li>
+        <li><a href="estructura.html">Estructura</a></li>
+        <li><a href="fases.html">Fases</a></li>
+        <li><a href="codigo.html">Código intermedio y final</a></li>
+        <li><a href="actuales.html">Compiladores actuales</a></li>
+        <li><a href="laboratorio.html">Laboratorio</a></li>
+        <li><a href="glosario.html">Glosario</a></li>
+        <li><a href="referencias.html">Referencias</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="portada-hero">
+  <div class="wrap">
+    <div>
+      <p class="materia">Trabajo de investigación en equipo</p>
+      <h1>Teoría de Compiladores</h1>
+      <p class="sub">Cómo un programa escrito por personas se convierte, paso a paso, en instrucciones que una máquina puede ejecutar.</p>
+      <div class="acciones">
+        <a class="btn primario" href="compiladores.html">Empezar por el principio</a>
+        <a class="btn secundario" href="laboratorio.html">Probar el mini compilador</a>
+      </div>
+    </div>
+    <div class="compilacion" aria-label="Ejemplo animado: una línea de código pasando por las fases de un compilador">
+      <div class="paso"><span class="et">fuente     </span> total = precio * cantidad + 5</div>
+      <div class="paso"><span class="et">léxico     </span> <span class="tk">id(total) = id(precio) * id(cantidad) + num(5)</span></div>
+      <div class="paso"><span class="et">sintáctico </span> <span class="ast">=( total, +( *( precio, cantidad ), 5 ) )</span></div>
+      <div class="paso"><span class="et">semántico  </span> <span class="ast">total:int ← int + int ✓</span></div>
+      <div class="paso"><span class="et">intermedio </span> <span class="ir">t1 = precio * cantidad; t2 = t1 + 5; total = t2</span></div>
+      <div class="paso"><span class="et">máquina    </span> <span class="asm">mov eax,[precio]; imul eax,[cantidad]; add eax,5; mov [total],eax</span></div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+  <!-- ======= DATOS DEL EQUIPO: editar aquí ======= -->
+  <div class="equipo">
+    <div class="panel">
+      <h2>Integrantes del equipo</h2>
+      <ul class="integrantes">
+        <li><span>Samil Quezada Suriel</span><span class="mat">26-0233</span></li>
+        <li><span>Enmanuel Hernández</span><span class="mat">25-1747</span></li>
+        <li><span>Elian Sención</span><span class="mat">26-0230</span></li>
+        <li><span>Enmanuel Oviedo</span><span class="mat">25-1565</span></li>
+        <li><span>Yansel Martínez</span><span class="mat">26-0823</span></li>
+      </ul>
+    </div>
+    <div class="panel datos">
+      <h2>Datos de la actividad</h2>
+      <dl>
+        <dt>Universidad</dt><dd>Nombre de la universidad</dd>
+        <dt>Asignatura</dt><dd>Nombre de la asignatura</dd>
+        <dt>Docente</dt><dd>Nombre del profesor o profesora</dd>
+        <dt>Sección</dt><dd>00</dd>
+        <dt>Fecha</dt><dd>Noviembre de 2026</dd>
+      </dl>
+    </div>
+  </div>
+  <!-- ======= fin datos del equipo ======= -->
+
+  <section class="indice" aria-labelledby="contenido">
+    <h2 id="contenido" class="mt-0">Contenido del portal</h2>
+    <p>El recorrido sigue el mismo orden en que trabaja un compilador: primero qué es y de dónde viene la teoría, luego cómo está construido y qué hace en cada fase, y al final qué herramientas reales usan hoy los programadores.</p>
+    <ol>
+      <li><a href="compiladores.html"><b>1. Compiladores y autómatas</b><span>Qué es un compilador y por qué la Teoría de Autómatas y Lenguajes Formales es su base matemática.</span></a></li>
+      <li><a href="estructura.html"><b>2. Estructura de un compilador</b><span>El modelo análisis–síntesis, el front-end y el back-end, la tabla de símbolos y el manejo de errores.</span></a></li>
+      <li><a href="fases.html"><b>3. Fases de la compilación</b><span>Del análisis léxico a la generación de código, con un mismo ejemplo seguido de principio a fin.</span></a></li>
+      <li><a href="codigo.html"><b>4. Código intermedio y final</b><span>Por qué existe una representación intermedia y cómo se llega al código máquina.</span></a></li>
+      <li><a href="actuales.html"><b>5. Compiladores actuales</b><span>GCC, Clang/LLVM, MSVC, javac, Roslyn, rustc y otros que se usan hoy en la industria.</span></a></li>
+      <li><a href="laboratorio.html"><b>6. Laboratorio interactivo</b><span>Un mini compilador en el navegador que muestra cada fase sobre el código que escribas.</span></a></li>
+      <li><a href="glosario.html"><b>7. Glosario</b><span>Los términos clave del tema, explicados en una o dos líneas.</span></a></li>
+      <li><a href="referencias.html"><b>8. Referencias</b><span>Libros, documentación oficial y apuntes consultados, con enlaces.</span></a></li>
+    </ol>
+  </section>
+</main>
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>Portal académico · Teoría de Compiladores · <span data-anio></span></div>
+    <div><a href="referencias.html">Referencias consultadas</a> · <a href="https://github.com/Yansel17/teoria-compiladores">Código fuente del portal</a></div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+
+</body>
+</html>
